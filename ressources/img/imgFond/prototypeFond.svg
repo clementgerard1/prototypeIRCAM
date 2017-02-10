@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<svg width="2000" height="2000" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <g display="none">
+  <title>nappe</title>
+  <ellipse opacity="0.2" transform="rotate(33.90627670288086 460.44445800781256,358.51849365234375) " ry="450.37037" rx="677.925926" id="svg_1" cy="358.518508" cx="460.444451" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#000000" fill="#ffff00"/>
+  <rect stroke="#000000" id="svg_4" height="877.037035" width="2005.333246" y="1114.666695" x="2.962988" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#7f003f"/>
+  <ellipse transform="rotate(-43.8766975402832 1629.0369873046873,718.8148193359376) " opacity="0.1" ry="625.777778" rx="884.148148" id="svg_2" cy="718.814807" cx="1629.037041" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#000000" fill="#00ffff"/>
+  <rect id="svg_3" height="687.407407" width="1234.962963" y="-210.37037" x="465.185185" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#000000" fill="#ff0000"/>
+  <rect stroke="#000000" transform="rotate(40.79464340209961 513.7777709960935,1250.9630126953125) " id="svg_5" height="984.776785" width="1743.103092" y="758.57458" x="-357.77382" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#ff0000"/>
+ </g>
+ <g display="none">
+  <title>forme</title>
+  <text xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" id="svg_6" y="1584.000003" x="1612.444438" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">_forme3</text>
+  <text id="svg_7" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="594.765437" x="815.999995" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">_forme1</text>
+  <text id="svg_8" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="1062.518489" x="354.567912" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">_forme1</text>
+  <text id="svg_9" xml:space="preserve" text-anchor="middle" font-family="serif" font-size="24" y="566.320962" x="1764.148151" opacity="0.2" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" stroke="#000000" fill="#000000">_forme3</text>
+ </g>
+ <g display="inline">
+  <title>Chemin</title>
+  <rect id="svg_12" stroke="#00ffff" transform="rotate(-7.907166481018066 681.6790161132811,152.29629516601588) " class="chemin1" height="125.504232" width="1089.996805" y="89.544193" x="136.680613" fill-opacity="0.02" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+  <path fill-opacity="0.02" id="svg_10" d="m221.82716,221.827161l903.308642,-127.012346l609.975309,752.197531l-1460.148148,666.864198" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#00ffff" fill="#000000"/>
+  <rect stroke="#00ffff" transform="rotate(-24.166627883911133 979.3167724609385,1182.4913330078127) " class="chemin1" id="svg_11" height="125.504232" width="1691.540086" y="1119.739294" x="133.546726" fill-opacity="0.02" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#ff0000"/>
+  <rect id="svg_13" stroke="#00ffff" transform="rotate(48.59125900268555 1421.2344970703125,458.86419677734375) " class="chemin1" height="125.504232" width="1089.996805" y="396.112081" x="876.236163" fill-opacity="0.02" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+  <path fill-opacity="0" id="svg_14" d="m250.271603,304.000003l780.049383,1424.790123l730.074074,-1419.061728" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#ff0000" fill="#000000"/>
+  <rect class="chemin2" stroke="#ff0000" transform="rotate(116.25727844238281 1384.8887939453125,969.2838134765624) " id="svg_15" height="206.570068" width="1775.204487" y="865.998853" x="497.286552" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+  <rect id="svg_17" class="chemin2" stroke="#ff0000" transform="rotate(61.35581970214844 613.7282714843751,950.3209228515623) " height="206.570068" width="1775.204487" y="847.035886" x="-273.873932" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+  <path id="svg_18" d="m212.345679,209.185185l833.777778,255.407407l-423.506173,1289.481481l-499.358025,-553.08642" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#7f007f" fill="#000000"/>
+  <rect stroke="#7f007f" transform="rotate(108.66990661621094 844.9153442382811,1055.975341796875) " id="svg_19" height="234.053048" width="1455.308546" y="938.948801" x="117.261073" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+  <rect id="svg_20" transform="rotate(16.301708221435547 646.9135742187499,341.9259338378907) " height="183.308642" width="1077.728395" y="250.271608" x="108.049383" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" stroke="#7f007f" fill="#000000"/>
+  <rect id="svg_21" stroke="#7f007f" transform="rotate(48.91825485229492 375.16070556640676,1452.4316406249998) " height="183.308642" width="923.673354" y="1360.777294" x="-86.675991" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+  <rect id="svg_22" stroke="#7f007f" transform="rotate(96.74270629882812 188.69161987304693,693.9131469726561) " height="234.053048" width="1191.369462" y="576.886616" x="-406.993142" fill-opacity="0" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="#000000"/>
+ </g>
+</svg>
