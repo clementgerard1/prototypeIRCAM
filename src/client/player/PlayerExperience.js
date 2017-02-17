@@ -31,12 +31,16 @@ export default class PlayerExperience extends soundworks.Experience {
               "sounds/nappe/nage.mp3",  // ...
               "sounds/nappe/tempete.mp3",
               "sounds/nappe/vent.mp3",
-              "sounds/camus.mp3", // 5  
-              "markers/markers.json", 
-              "sounds/obama.mp3",    
-              "markers/markers.json",
-              "sounds/last.mp3",   
-              "markers/markers.json"] //10  
+              "sounds/chemin/camusC.mp3", // 5  
+              "markers/camus.json", 
+              "sounds/chemin/churchillC.mp3",    
+              "markers/churchill.json",
+              "sounds/chemin/irakC.mp3",   
+              "markers/irak.json", //10  
+              "sounds/forme/trump.mp3",
+              "sounds/forme/eminem.mp3",
+              "sounds/forme/fr.mp3",
+              "sounds/forme/brexit.mp3"]
     });
     this.startOK = false;
     this.startSegmentFini = [];
@@ -44,24 +48,38 @@ export default class PlayerExperience extends soundworks.Experience {
 
     // PARAMETRE
     this.nbChemin = 3;
-    this.nbSegment = [59,59,59];
+    this.nbForme = 4;
+    this.qtRandom = 25;
+    this.nbSegment = [232,144,106];
 
     //
     this.ancien1 = [];
     this.ancien2 = [];
+    this.ancien3 = false
     this.countTimeout = [];
     this.direction = [];
     this.oldTabChemin = [];
     this.count1 = [];
     this.count2 = [];
     this.segmenter = [];
+    this.segmenterFB = [];
+    this.segmenterDelayFB = [];
     this.segmenterGain = [];
     this.segmenterGainGrain = [];
     this.sources = [];
     this.gains = [];
     this.gainsDirections = [];
     this.grain;
-    this.countMax = 20;
+    this.lastSegment = [0,0,0];
+    this.lastPosition = [0,0,0];
+    this.gainOutputDirect;
+    this.gainOutputGrain;
+    this.gainsForme = [];
+    this.ancienForme = [false,false,false];
+    this.gainsGrainForme = [];
+    this.soundForme = [];
+    this.rampForme = {'forme1':0, 'forme2':0, 'forme3':0, 'forme4' :0};
+    this.countMax = 100;
 
     for(let i =0; i<this.nbChemin;i++){
       this.count1[i] = 20;
@@ -89,8 +107,9 @@ export default class PlayerExperience extends soundworks.Experience {
     this._isInRect = this._isInRect.bind(this);
     this._isIn = this._isIn.bind(this);
     this._isInChemin = this._isInChemin.bind(this);
+    this._isInForme = this._isInForme.bind(this);
     this._getDistanceNode = this._getDistanceNode.bind(this);
-    this._creationUniversSonore=this._creationUniversSonore.bind(this);
+    this._creationUniversSonore=this._creationUniversSonore.bind(this);    
     this._updateGain = this._updateGain.bind(this);
     this._rotatePoint = this._rotatePoint.bind(this);
     this._myListener= this._myListener.bind(this);
@@ -104,6 +123,7 @@ export default class PlayerExperience extends soundworks.Experience {
     this._findNewSegment = this._findNewSegment.bind(this);
     this._actualiserSegmentIfNotIn = this._actualiserSegmentIfNotIn.bind(this);
     this._actualiserAudioChemin = this._actualiserAudioChemin.bind(this);
+    this._actualiserAudioForme = this._actualiserAudioForme.bind(this);
     this.receive('fond',(data)=>this._addFond(data));
     this.receive('model',(model,model1,model2)=>this._setModel(model,model1,model2));
     this.receive('reponseForme',(forme,x,y)=>this._addForme(forme,x,y));
@@ -121,7 +141,7 @@ export default class PlayerExperience extends soundworks.Experience {
       this.decoder3 = new Decodage3();
     }else{
       //Paramètre initiaux
-      this._addBoule(200,200);
+      this._addBoule(10,10);
       document.body.style.overflow = "hidden";  
       this.centreX = window.innerWidth/2;
       this.tailleEcranX = window.innerWidth;
@@ -137,9 +157,13 @@ export default class PlayerExperience extends soundworks.Experience {
       this.totalElements = this.listeEllipse.length + this.listeRect.length;
       this.listeText = document.getElementsByTagName('text');
       this.listeForme = [];
-      this.listeRectChemin1 = document.getElementsByClassName('chemin1');
-      this.listeRectChemin2 = document.getElementsByClassName('chemin0');
+      this.listeRectChemin1 = document.getElementsByClassName('chemin0');
+      this.listeRectChemin2 = document.getElementsByClassName('chemin1');
       this.listeRectChemin3 = document.getElementsByClassName('chemin2');
+      this.listeRectForme1 = document.getElementsByClassName('forme1');
+      this.listeRectForme2 = document.getElementsByClassName('forme2');
+      this.listeRectForme3 = document.getElementsByClassName('forme3');
+      this.listeRectForme4 = document.getElementsByClassName('forme4');
 
       //Remplace les _textes par leur forme.
       this._remplaceForme(); 
@@ -150,6 +174,7 @@ export default class PlayerExperience extends soundworks.Experience {
       //Initisalisation
       this.maxCountUpdate = 4;
       this.countUpdate = this.maxCountUpdate + 1; // Initialisation
+      this.visualisationFormeChemin = false;
       this.visualisationBoule=true; // Visualisation de la boule
       if(!this.visualisationBoule){
         this.view.$el.querySelector('#boule').style.display='none';
@@ -165,18 +190,18 @@ export default class PlayerExperience extends soundworks.Experience {
       }
 
       //Pour enelever les bordures :
-      if(this.visualisationForme){
-        for(let i = 0;i<this.listeEllipse.length;i++){
-          this.listeEllipse[i].setAttribute('stroke-width',0);
-        }
-        for(let i = 0;i<this.listeRect.length;i++){
-          this.listeRect[i].setAttribute('stroke-width',0);
-        }
-      }   
+      // if(this.visualisationForme){
+      //   for(let i = 0;i<this.listeEllipse.length;i++){
+      //     this.listeEllipse[i].setAttribute('stroke-width',0);
+      //   }
+      //   for(let i = 0;i<this.listeRect.length;i++){
+      //     this.listeRect[i].setAttribute('stroke-width',0);
+      //   }
+      // }   
 
       //Variables 
-      this.mirrorBouleX = 250;
-      this.mirrorBouleY = 250;
+      this.mirrorBouleX = 10;
+      this.mirrorBouleY = 10;
       this.offsetX = 0; // Initisalisation du offset
       this.offsetY = 0
       this.SVG_MAX_X = document.getElementsByTagName('svg')[0].getAttribute('width');
@@ -189,6 +214,14 @@ export default class PlayerExperience extends soundworks.Experience {
           const newValues = this._toMove(data[2],data[1]-25);
           this.tabIn = this._isIn(newValues[0],newValues[1]);
           this.tabChemin = this._isInChemin(newValues[0],newValues[1]);
+          // if(this.modelOk&&!(this.tabChemin[0]&&this.tabChemin[1]&&this.tabChemin[2])){
+          //   this.decoder1.reset();
+          //   this.decoder2.reset();
+          // }
+          this.tabForme = this._isInForme(newValues[0], newValues[1]);
+          if(this.modelOk&&!(this.tabForme[0]&&this.tabForme[1]&&this.tabForme[2]&&this.tabForme[3])){
+            this.decoder.reset();
+          }
           if(this.countUpdate>this.maxCountUpdate){
             this._updateGain(this.tabIn);
             this.countUpdate = 0;
@@ -240,19 +273,21 @@ export default class PlayerExperience extends soundworks.Experience {
 
   /* Supprime les rectangles qui suivent les chemins */
   _supprimerRectChemin(){
-    let tab = document.getElementsByClassName('chemin1');
-    for(let i =0 ;i<tab.length;i++){
-      tab[i].style.display = 'none';
-    }
+    let tab = document.getElementsByClassName('chemin0');
+    if(!this.visualisationFormeChemin){
+      for(let i =0 ;i<tab.length;i++){
+        tab[i].style.display = 'none';
+      }
 
-    tab = document.getElementsByClassName('chemin2');
-    for(let i =0 ;i<tab.length;i++){
-      tab[i].style.display = 'none';
-    }
+      tab = document.getElementsByClassName('chemin1');
+      for(let i =0 ;i<tab.length;i++){
+        tab[i].style.display = 'none';
+      }
 
-    tab = document.getElementsByClassName('chemin3');
-    for(let i =0 ;i<tab.length;i++){
-      tab[i].style.display = 'none';
+      tab = document.getElementsByClassName('chemin2');
+      for(let i =0 ;i<tab.length;i++){
+        tab[i].style.display = 'none';
+      }
     }
   }
 
@@ -268,7 +303,7 @@ export default class PlayerExperience extends soundworks.Experience {
         const newNode = boule.parentNode.insertBefore(formeXmlTab[i],boule);
         this.listeForme[this.listeForme.length] = newNode.setAttribute('transform','translate('+x+' '+y+')');
       }
-    }
+    } 
   }
 
   /* Callback orientationMotion / Mouvement de la boule*/
@@ -348,12 +383,17 @@ export default class PlayerExperience extends soundworks.Experience {
     for(let i = 0; i < newList.length; i++){
       const nomElement = newList[i].innerHTML;
        if(nomElement.slice(0,1)=='_'){
+
          const nomForme = nomElement.slice(1,nomElement.length);
          const x = newList[i].getAttribute('x');
          const y = newList[i].getAttribute('y');
          this.send('demandeForme',nomForme,x,y);
          const parent = newList[i].parentNode;
          parent.removeChild(newList[i]);
+         const elems = document.getElementsByClassName(nomForme);
+         for(let i = 0; i<elems.length;i++){
+            elems[i].style.display='none';
+         }
        }
     }
   }
@@ -479,7 +519,109 @@ export default class PlayerExperience extends soundworks.Experience {
       chemin3 = this._isInRect(parseFloat(hauteur), parseFloat(largeur), parseFloat(left), parseFloat(top), x, y,rotateAngle,centreRotateX,centreRotateY);
       i++;
     }        
-    return [chemin2,chemin1,chemin3];
+    return [chemin1,chemin2,chemin3];
+  }
+
+  _isInForme(x,y){
+    //Variables
+    let rotateAngle;
+    let centreRotateX;
+    let centreRotateY;
+    let hauteur;
+    let largeur;
+    let left;
+    let top;
+    let trans;
+    let i =0;
+
+    //FORME 1
+    let forme1 = false;
+    while(!forme1 && i<this.listeRectForme1.length){
+      rotateAngle=0;
+      centreRotateX=null;
+      centreRotateY=null;
+      hauteur = this.listeRectForme1[i].getAttribute('width');
+      largeur = this.listeRectForme1[i].getAttribute('height');
+      left = this.listeRectForme1[i].getAttribute('x');
+      top = this.listeRectForme1[i].getAttribute('y');
+      let trans = this.listeRectForme1[i].getAttribute('transform');
+      if(/rotate/.test(trans)){
+        trans = trans.slice(7,trans.length);
+        centreRotateX = parseFloat(trans.split(" ")[1]);
+        centreRotateY = parseFloat(trans.split(",")[1].replace(")",""));
+        rotateAngle = parseFloat(trans.split(" ")[0]);
+      }
+      forme1 = this._isInRect(parseFloat(hauteur), parseFloat(largeur), parseFloat(left), parseFloat(top), x, y,rotateAngle,centreRotateX,centreRotateY);
+      i++;
+    }
+
+    //FORME 2
+    i =0;
+    let forme2 = false;
+    while(!forme2 && i<this.listeRectForme2.length){
+      rotateAngle=0;
+      centreRotateX=null;
+      centreRotateY=null;
+      hauteur = this.listeRectForme2[i].getAttribute('width');
+      largeur = this.listeRectForme2[i].getAttribute('height');
+      left = this.listeRectForme2[i].getAttribute('x');
+      top = this.listeRectForme2[i].getAttribute('y');
+      let trans = this.listeRectForme2[i].getAttribute('transform');
+      if(/rotate/.test(trans)){
+        trans = trans.slice(7,trans.length);
+        centreRotateX = parseFloat(trans.split(" ")[1]);
+        centreRotateY = parseFloat(trans.split(",")[1].replace(")",""));
+        rotateAngle = parseFloat(trans.split(" ")[0]);
+      }
+      forme2 = this._isInRect(parseFloat(hauteur), parseFloat(largeur), parseFloat(left), parseFloat(top), x, y,rotateAngle,centreRotateX,centreRotateY);
+      i++;
+    }
+
+    //FORME 3
+    i =0;
+    let forme3 = false;
+    while(!forme2 && i<this.listeRectForme3.length){
+      rotateAngle=0;
+      centreRotateX=null;
+      centreRotateY=null;
+      hauteur = this.listeRectForme3[i].getAttribute('width');
+      largeur = this.listeRectForme3[i].getAttribute('height');
+      left = this.listeRectForme3[i].getAttribute('x');
+      top = this.listeRectForme3[i].getAttribute('y');
+      let trans = this.listeRectForme3[i].getAttribute('transform');
+      if(/rotate/.test(trans)){
+        trans = trans.slice(7,trans.length);
+        centreRotateX = parseFloat(trans.split(" ")[1]);
+        centreRotateY = parseFloat(trans.split(",")[1].replace(")",""));
+        rotateAngle = parseFloat(trans.split(" ")[0]);
+      }
+      forme3 = this._isInRect(parseFloat(hauteur), parseFloat(largeur), parseFloat(left), parseFloat(top), x, y,rotateAngle,centreRotateX,centreRotateY);
+      i++;
+    }
+
+    //FORME 4
+    i =0;
+    let forme4 = false;
+    while(!forme2 && i<this.listeRectForme4.length){
+      rotateAngle=0;
+      centreRotateX=null;
+      centreRotateY=null;
+      hauteur = this.listeRectForme4[i].getAttribute('width');
+      largeur = this.listeRectForme4[i].getAttribute('height');
+      left = this.listeRectForme4[i].getAttribute('x');
+      top = this.listeRectForme4[i].getAttribute('y');
+      let trans = this.listeRectForme4[i].getAttribute('transform');
+      if(/rotate/.test(trans)){
+        trans = trans.slice(7,trans.length);
+        centreRotateX = parseFloat(trans.split(" ")[1]);
+        centreRotateY = parseFloat(trans.split(",")[1].replace(")",""));
+        rotateAngle = parseFloat(trans.split(" ")[0]);
+      }
+      forme4 = this._isInRect(parseFloat(hauteur), parseFloat(largeur), parseFloat(left), parseFloat(top), x, y,rotateAngle,centreRotateX,centreRotateY);
+      i++;
+    }
+    return [forme1,forme2,forme3,forme4];
+
   }
 
   // Fonction qui dit si un point est dans un rect
@@ -582,10 +724,17 @@ export default class PlayerExperience extends soundworks.Experience {
       });
       this.segmenterGain[i] = audioContext.createGain();
       this.segmenterGainGrain[i] = audioContext.createGain();
-      this.segmenterGain[i].connect(audioContext.destination);
+      //this.segmenterFB[i] = audioContext.createGain();
+      //this.segmenterDelayFB[i] = audioContext.createDelay(0.8);
       this.segmenterGainGrain[i].gain.setValueAtTime(0,audioContext.currentTime);
       this.segmenterGain[i].gain.setValueAtTime(0,audioContext.currentTime);
+      //this.segmenterFB[i].gain.setValueAtTime(0.0,audioContext.currentTime);
       this.segmenterGainGrain[i].connect(this.grain.input);
+      this.segmenterGain[i].connect(audioContext.destination);
+      //this.segmenter[i].connect(this.segmenterFB[i]);
+      //this.segmenterFB[i].connect(this.segmenterDelayFB[i]);
+      //this.segmenterDelayFB[i].connect(audioContext.destination);
+      //this.segmenterDelayFB[i].connect(this.segmenterFB[i]);
       this.segmenter[i].connect(this.segmenterGain[i]);
       this.segmenter[i].connect(this.segmenterGainGrain[i]);
       this._startSegmenter(i);
@@ -609,17 +758,52 @@ export default class PlayerExperience extends soundworks.Experience {
 
     }
 
-    // Figure
+    this.gainOutputDirect = audioContext.createGain();
+    this.gainOutputDirect.gain.value=0;
+    this.gainOutputDirect.connect(audioContext.destination);
+    this.gainOutputGrain = audioContext.createGain();
+    this.gainOutputGrain.gain.value=0;
+    this.gainOutputGrain.connect(this.grain.input);
+
+
+    for(let i = 0 ; i < this.nbForme ; i++){
+      // Figure
+
+      //création des gains de sons direct
+      this.gainsForme[i] = audioContext.createGain();
+      this.gainsForme[i].gain.value=0;
+      this.gainsForme[i].connect(this.gainOutputDirect);
+
+
+      //création des gains de sons granulés
+      this.gainsGrainForme[i] = audioContext.createGain();
+      this.gainsGrainForme[i].gain.value=0;
+      this.gainsGrainForme[i].connect(this.gainOutputGrain);
+
+      //Forme source sonore
+      this.soundForme[i] = audioContext.createBufferSource();
+      this.soundForme[i].buffer = this.loader.buffers[10 + (i+1)];
+      this.soundForme[i].connect(this.gainsForme[i]);
+      this.soundForme[i].connect(this.gainsGrainForme[i]);
+      this.soundForme[i].loop = true;
+      this.soundForme[i].start();
+    }
      
   }
 
+
   _startSegmenter(i){
     this.segmenter[i].trigger();
-    const newPeriod = parseFloat(this.loader.buffers[6]['duration'][this.segmenter[i].segmentIndex])*1000;
+    let newPeriod = parseFloat(this.loader.buffers[6+(i*2)]['duration'][this.segmenter[i].segmentIndex])*1000;
+    // if(newPeriod> 150){
+    //   newPeriod -= 30;
+    // }else if(newPeriod>400){
+    //   newPeriod -= 130;
+    // }else if(newPeriod> 800){
+    //   newPeriod -= 250;
+    // }
     setTimeout(()=>{this._startSegmenter(i);},newPeriod);
   }
-      //Création des sources pour les formes
-      //this.sources;
 
   // Fait monter le son quand la boule est dans la forme et baisser si la boule n'y est pas
   _updateGain(tabIn){
@@ -644,30 +828,140 @@ export default class PlayerExperience extends soundworks.Experience {
     if(this.tabChemin[i]){
       let actual1 = this.segmenterGain[i].gain.value;
       let actual2 = this.segmenterGainGrain[i].gain.value;
+      //let actual3 = this.segmenterFB[i].gain.value;
+      //this.segmenterFB[i].gain.cancelScheduledValues(audioContext.currentTime);
       this.segmenterGain[i].gain.cancelScheduledValues(audioContext.currentTime);
       this.segmenterGainGrain[i].gain.cancelScheduledValues(audioContext.currentTime);
       this.segmenterGain[i].gain.setValueAtTime(actual1,audioContext.currentTime);
       this.segmenterGainGrain[i].gain.setValueAtTime(actual2,audioContext.currentTime);
-      this.segmenterGainGrain[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 2);
-      this.segmenterGain[i].gain.linearRampToValueAtTime(0.4, audioContext.currentTime + 3);
+      //this.segmenterFB[i].gain.setValueAtTime(actual3,audioContext.currentTime);
+      this.segmenterGainGrain[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1);
+      this.segmenterGain[i].gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.6);
+      //this.segmenterFB[i].gain.linearRampToValueAtTime(0.4, audioContext.currentTime + 3);
     }else{
       let actual1 = this.segmenterGain[i].gain.value;
       let actual2 = this.segmenterGainGrain[i].gain.value;
+      //let actual3 = this.segmenterFB[i].gain.value;
+      //this.segmenterFB[i].gain.cancelScheduledValues(audioContext.currentTime);
       this.segmenterGain[i].gain.cancelScheduledValues(audioContext.currentTime);
       this.segmenterGainGrain[i].gain.cancelScheduledValues(audioContext.currentTime);
       this.segmenterGain[i].gain.setValueAtTime(actual1,audioContext.currentTime);
       this.segmenterGainGrain[i].gain.setValueAtTime(actual2,audioContext.currentTime);
+      //this.segmenterFB[i].gain.setValueAtTime(actual3,audioContext.currentTime);
       if(this.startSegmentFini[i]){
-        this.segmenterGainGrain[i].gain.linearRampToValueAtTime(0.9, audioContext.currentTime + 2);
+        this.segmenterGainGrain[i].gain.linearRampToValueAtTime(actual1+0.15, audioContext.currentTime + 0.1);
         setTimeout( ()=>{
-          this.segmenterGainGrain[i].gain.linearRampToValueAtTime(0,audioContext.currentTime + 1.5);         
+          this.segmenterGainGrain[i].gain.linearRampToValueAtTime(0,audioContext.currentTime + 0.3);         
         }
         ,2000);
-        this.segmenterGain[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.5);
+        this.segmenterGain[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.4);
+        //this.segmenterFB[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 2.5);
       }else{
         this.startSegmentFini[i] = true;
       }
     }
+  }
+
+  _actualiserAudioForme(id){
+    //Forme1
+    if(id==0 && this.tabForme[id]){
+      let gainGrain = 1 - (this.rampForme["forme1"]/600);
+      let gainDirect = this.rampForme["forme1"]/600;
+      if(gainDirect<0){
+        gainDirect = 0;
+      }else if(gainDirect>1){
+        gainDirect = 1;
+      }
+      if(gainGrain<0){
+        gainGrain = 0;
+      }else if(gainGrain>1){
+        gainGrain = 1;
+      }
+      if(this.tabForme[id]){
+        this.gainsForme[id].gain.linearRampToValueAtTime(gainDirect, audioContext.currentTime + 0.01);
+        this.gainsGrainForme[id].gain.linearRampToValueAtTime(gainGrain, audioContext.currentTime + 0.01);
+      }
+    }
+
+        //Forme2
+    if(id==1 && this.tabForme[id]){
+      let gainGrain = 1 - (this.rampForme["forme2"]/600);
+      let gainDirect = this.rampForme["forme2"]/600;
+      if(gainDirect<0){
+        gainDirect = 0;
+      }else if(gainDirect>1){
+        gainDirect = 1;
+      }
+      if(gainGrain<0){
+        gainGrain = 0;
+      }else if(gainGrain>1){
+        gainGrain = 1;
+      }
+      if(this.tabForme[id]){
+        this.gainsForme[id].gain.linearRampToValueAtTime(gainDirect, audioContext.currentTime + 0.01);
+        this.gainsGrainForme[id].gain.linearRampToValueAtTime(gainGrain, audioContext.currentTime + 0.01);
+      }
+    }
+
+    //Forme3
+    if(id==2 && this.tabForme[id]){
+      let gainGrain = 1 - (this.rampForme["forme3"]/600);
+      let gainDirect = this.rampForme["forme3"]/600;
+      if(gainDirect<0){
+        gainDirect = 0;
+      }else if(gainDirect>1){
+        gainDirect = 1;
+      }
+      if(gainGrain<0){
+        gainGrain = 0;
+      }else if(gainGrain>1){
+        gainGrain = 1;
+      }
+      if(this.tabForme[id]){
+        this.gainsForme[id].gain.linearRampToValueAtTime(gainDirect, audioContext.currentTime + 0.01);
+        this.gainsGrainForme[id].gain.linearRampToValueAtTime(gainGrain, audioContext.currentTime + 0.01);
+      }
+    }
+    
+    //Forme4
+    if(id==3 && this.tabForme[id]){
+      let gainGrain = 1 - (this.rampForme["forme4"]/600);
+      let gainDirect = this.rampForme["forme4"]/600;
+      if(gainDirect<0){
+        gainDirect = 0;
+      }else if(gainDirect>1){
+        gainDirect = 1;
+      }
+      if(gainGrain<0){
+        gainGrain = 0;
+      }else if(gainGrain>1){
+        gainGrain = 1;
+      }
+      if(this.tabForme[id]){
+        this.gainsForme[id].gain.linearRampToValueAtTime(gainDirect, audioContext.currentTime + 0.01);
+        this.gainsGrainForme[id].gain.linearRampToValueAtTime(gainGrain, audioContext.currentTime + 0.01);
+      }
+    }
+
+    if(!this.tabForme[0]&&(this.tabForme[0]!=this.ancienForme[0])){
+      this.gainsForme[0].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+      this.gainsGrainForme[0].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+    }
+    if(!this.tabForme[1]&&(this.tabForme[1]!=this.ancienForme[1])){
+      this.gainsForme[1].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+      this.gainsGrainForme[1].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+    }
+    if(!this.tabForme[2]&&(this.tabForme[2]!=this.ancienForme[2])){
+      this.gainsForme[2].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+      this.gainsGrainForme[2].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+    }
+    if(!this.tabForme[3]&&(this.tabForme[3]!=this.ancienForme[3])){
+      this.gainsForme[3].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+      this.gainsGrainForme[3].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+    }
+
+    this.ancienForme = [this.tabForme[0],this.tabForme[1],this.tabForme[2],this.tabForme[3]];
+
   }
 
   /* -----------------------------------------XMM----------------------------------------------- */
@@ -680,32 +974,108 @@ export default class PlayerExperience extends soundworks.Experience {
 
   _processProba(){    
     let probaMax = this.decoder.getProba();
+    console.log(probaMax);
     let probaMax1 = this.decoder2.getProba();
     let probaMax2 = this.decoder3.getProba();
     let newSegment = [];
+    //Chemin
     for(let i = 0 ; i < this.nbChemin ; i ++){
       newSegment[i] = this._findNewSegment(probaMax1, probaMax2, i);
       this._actualiserSegmentIfNotIn(newSegment[i],i);
-      let nom1 = 'fond-'+i+'-1';
-      let nom2 = 'fond-'+i+'-2';
+      let nom1 = 'prototypeFond-'+i+'-1';
+      let nom2 = 'prototypeFond-'+i+'-2';
       if(this.tabChemin[i]&&(probaMax1[0]==nom1||probaMax2[0]==nom2)){
-        if(probaMax1[1][i]!=NaN){
+        if(!isNaN(probaMax1[1][i]) || !isNaN(probaMax2[1][i])){
+          this.lastPosition[i] = newSegment[i];
+          newSegment[i] = newSegment[i]+ (Math.trunc(Math.random()*this.qtRandom));
           this.segmenter[i].segmentIndex = newSegment[i];
         }
+      }else{
+        this.segmenter[i].segmentIndex = this.lastPosition[i] + (Math.trunc(Math.random()*this.qtRandom));
       }
       if(this.tabChemin[i]!=this.oldTabChemin[i]){
         this._actualiserAudioChemin(i);
       }
+      if(i==2){
+      }
       this.oldTabChemin[i] = this.tabChemin[i];
     }
+
+    //Forme
+    let direct = false;
+    let i = 0;
+    while((!direct) && (i<this.nbForme)){
+      if(this.tabForme[i]){
+        direct = true;
+      }
+      i++
+    }
+
+   let actual1 = this.gainOutputDirect.gain.value;
+   let actual2 = this.gainOutputGrain.gain.value;
+
+    if(direct!=this.ancien3){
+      if(direct){
+        this.gainOutputDirect.gain.cancelScheduledValues(audioContext.currentTime);
+        this.gainOutputDirect.gain.setValueAtTime(actual1,audioContext.currentTime);
+        this.gainOutputDirect.gain.linearRampToValueAtTime(0.5,audioContext.currentTime + 2);
+        this.gainOutputGrain.gain.cancelScheduledValues(audioContext.currentTime);
+        this.gainOutputGrain.gain.setValueAtTime(actual1,audioContext.currentTime);
+        this.gainOutputGrain.gain.linearRampToValueAtTime(0.5,audioContext.currentTime + 2);
+      }else{
+        this.gainOutputDirect.gain.cancelScheduledValues(audioContext.currentTime);
+        this.gainOutputDirect.gain.setValueAtTime(actual1,audioContext.currentTime);
+        this.gainOutputDirect.gain.linearRampToValueAtTime(0,audioContext.currentTime + 2);
+        this.gainOutputGrain.gain.cancelScheduledValues(audioContext.currentTime);
+        this.gainOutputGrain.gain.setValueAtTime(actual1,audioContext.currentTime);
+        this.gainOutputGrain.gain.linearRampToValueAtTime(0,audioContext.currentTime + 2);
+        this.rampForme['forme1'] = 0;
+        this.rampForme['forme2'] = 0;
+        this.rampForme['forme3'] = 0;
+        this.rampForme['forme4'] = 0;
+      }
+    }
+    this.ancien3 = direct;
+
+    if(direct){
+      for(let i = 0; i<this.nbForme ; i++){
+        if(probaMax=='forme1'){
+          this.rampForme['forme2']--;
+          this.rampForme['forme3']--;
+          this.rampForme['forme4']--;
+        }else if(probaMax=='forme2'){
+          this.rampForme['forme1']--;
+          this.rampForme['forme3']--;
+          this.rampForme['forme4']--;
+        }else if(probaMax=='forme3'){
+          this.rampForme['forme1']--;
+          this.rampForme['forme2']--;
+          this.rampForme['forme4']--;
+        }else if(probaMax=='forme4'){
+          this.rampForme['forme1']--;
+          this.rampForme['forme2']--;
+          this.rampForme['forme3']--;
+        }else if(probaMax==null){
+          this.rampForme['forme1']--;
+          this.rampForme['forme2']--;
+          this.rampForme['forme3']--;
+          this.rampForme['forme4']--;
+        }
+      }
+      this.rampForme[probaMax]++;
+    }
+    for(let i = 0 ; i < this.nbForme ; i++){
+      this._actualiserAudioForme(i);
+    }
+
   }
 
   // Trouve en fonction de xmm le segment le plus proche de la position de l'utilisateur
   _findNewSegment(probaMax1, probaMax2, id){
     let newSegment = -1;
     let actuel = null;
-    if(this.ancien1[id]-probaMax1[1][id]<-0.001){
-      newSegment = Math.trunc(probaMax1[1][id]*this.nbSegment[id]);
+    if((this.ancien1[id]-probaMax1[1][id]!=0.)&&!isNaN(probaMax1[1][id])){
+      newSegment = Math.trunc(probaMax1[1][id]*(this.nbSegment[id]-this.qtRandom));
       actuel = "1";
       if(this.count2[id]>this.countMax){
         this.decoder3.reset();
@@ -713,8 +1083,8 @@ export default class PlayerExperience extends soundworks.Experience {
       }
       this.count1[id] = 0;
       this.count2[id]++;
-    }else if (this.ancien2[id]-probaMax2[1][id]<-0.001){
-      newSegment = Math.trunc((1-probaMax2[1][id])*this.nbSegment[id]);
+    }else if ((this.ancien2[id]-probaMax2[1][id]!=0.)&&!isNaN(probaMax2[1][id])){
+      newSegment = Math.trunc((1-probaMax2[1][id])*(this.nbSegment[id]-this.qtRandom));
       actuel = "0";
       if(this.count1[id]>this.countMax){
         this.decoder2.reset();
@@ -723,7 +1093,7 @@ export default class PlayerExperience extends soundworks.Experience {
       this.count2[id] = 0;
       this.count1[id]++;
     }else{
-      newSegment = this.segmenter[id].segmentIndex;
+      newSegment = this.lastSegment[id];
     }
     this.ancien1[id] = probaMax1[1][id];
     this.ancien2[id] = probaMax2[1][id];
@@ -734,7 +1104,7 @@ export default class PlayerExperience extends soundworks.Experience {
   _actualiserSegmentIfNotIn(newSegment, id){
     if(!this.tabChemin[id]){
       if(this.countTimeout[id]>40){
-        if(newSegment>59){
+        if(newSegment>(this.nbSegment[id]-this.qtRandom)){
           this.direction[id] = false;
         }else if(newSegment<1){
           this.direction[id] = true;
@@ -746,8 +1116,10 @@ export default class PlayerExperience extends soundworks.Experience {
           newSegment--;
         }
       }
+      this.lastSegment[id] = newSegment;
+      let segment =newSegment+Math.trunc(Math.random()*this.qtRandom);
       this.countTimeout[id]++;
-      this.segmenter[id].segmentIndex = newSegment;
+      this.segmenter[id].segmentIndex = segment;
     }
   }
 }

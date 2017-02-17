@@ -32,7 +32,7 @@ export default class DesignerFormeExperience extends soundworks.Experience {
     //Services
     this.platform = this.require('platform', { features: ['web-audio', 'wake-lock'] });
     this.motionInput = this.require('motion-input', { descriptors: ['orientation'] });
-    this.loader = this.require('loader', { files: ['sounds/branches.mp3','sounds/gadoue.mp3',"sounds/nage.mp3","sounds/tempete.mp3","sounds/vent.mp3"] });
+    //this.loader = this.require('loader', { files: ['sounds/branches.mp3','sounds/gadoue.mp3',"sounds/nage.mp3","sounds/tempete.mp3","sounds/vent.mp3"] });
     this.label = 't';
     this.startOK = false;
   }

@@ -7,7 +7,7 @@ export default class DesignerCheminExperience extends Experience {
   constructor(clientType) {
     super(clientType);
     this.sharedConfig = this.require('shared-config');
-    this.fichierForme = 'fond.svg';
+    this.fichierForme = 'prototypeFond.svg';
     this.label = this.fichierForme.replace('.svg','')
     this.indice = 0; // Détermine quel path on est en train d'enregistrer (commence à 0)
     this.sens = 2;
@@ -37,7 +37,12 @@ export default class DesignerCheminExperience extends Experience {
 
   _savePhrase(data){
     let indice = 0;
-    const pathh = path.join(process.cwd(), 'ressources/phrases/chemin/'+data.label+"/");
+    let pathh;
+    if(this.sens==1){
+      pathh = path.join(process.cwd(), 'ressources/phrases/chemin/sens1/'+data.label+"/");
+    }else if(this.sens==2){
+      pathh = path.join(process.cwd(), 'ressources/phrases/chemin/sens2/'+data.label+"/");
+    }
     if(!fs.existsSync(pathh)){
       fs.mkdirSync(pathh);
     }

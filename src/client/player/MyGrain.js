@@ -31,7 +31,7 @@ export default class MyGrain extends waves.AudioTimeEngine {
 		this.output.gain.value = 1;
 
 		this.feedback = audioContext.createGain();
-		this.feedback.gain.value = 0.5;
+		this.feedback.gain.value = 0.1;
 		this.output.connect(this.feedback);
 		this.feedback.connect(this.input);
 
@@ -40,10 +40,10 @@ export default class MyGrain extends waves.AudioTimeEngine {
 		this.delay = [];
 
 		// Initialisation des paramètres
-    this.period = 50; //ms
+    this.period = 300; //ms
     this.finesse = 10;
-		this.randomPosition = 2300; //ms
-		this.rampGainCompensation= 5; //ms
+		this.randomPosition = 1500; //ms
+		this.rampGainCompensation= 10; //ms
 
 		for(let i = 0; i < 16; i++) { 
 			this.gain.push(audioContext.createGain());

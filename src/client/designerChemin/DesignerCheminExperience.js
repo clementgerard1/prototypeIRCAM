@@ -32,11 +32,11 @@ export default class DesignerFormeExperience extends soundworks.Experience {
     //Services
     this.platform = this.require('platform', { features: ['web-audio', 'wake-lock'] });
     this.motionInput = this.require('motion-input', { descriptors: ['orientation'] });
-    this.loader = this.require('loader', { files: ['sounds/nappe/branches.mp3','sounds/nappe/gadoue.mp3',"sounds/nappe/nage.mp3","sounds/nappe/tempete.mp3","sounds/nappe/vent.mp3"] });
     this.label = 't';
     this.actualId=1;
     this.actualSens=1;
     this.startOK = false;
+    this.couleurRec = 'white';
   }
 
   init() {
@@ -148,7 +148,7 @@ export default class DesignerFormeExperience extends soundworks.Experience {
 
 _onTouch(){
   if(!this.onRecord){
-    document.getElementById("fond").setAttribute("fill", "red");
+    document.getElementById("fond").setAttribute("fill", this.couleurRec);
     this.onRecord = true;
     this.enregistrement.startRecord();
   }else{

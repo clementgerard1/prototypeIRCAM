@@ -24,14 +24,16 @@ export default class Enregistrement{
        description: ['x', 'y']
 		});
 		this.hhmmDecoder = new HhmmDecoderLfo({
-			likelihoodWindow: 20,
+			likelihoodWindow: 4,
       callback: this._update
       }
     );
 
     //Variables
-		this.lastFrameX = null;
-		this.lastFrameY = null;
+		this.lastFrameX = 0.5;
+		this.lastFrameY = 0.5;
+		this.minPixelX = 3;
+		this.minPixelY = 3;
 		this.start = false;
 	}
 
@@ -46,28 +48,20 @@ export default class Enregistrement{
 
 
 	process(x,y){
-		let proc = true;
-		let newX;
-		let newY;
-		if(this.lastFrameX){
-			newX = x - this.lastFrameX ;
+		let difOk = false;
+		// Normalisation des entrées
+		let newX = this.lastFrameX-x;
+		let newY = this.lastFrameY-y;
+		let absX = Math.abs(newX);
+		let absY = Math.abs(newY);
+		if((absX>this.minPixelX) || (absY>this.minPixelY)){
+			difOk = true;
 			this.lastFrameX = x;
-			if(Math.abs(newX)>0.3){
-			}
-		}else{
-			this.lastFrameX = x;
-			proc = false;
-		}
-		if(this.lastFrameY){
-			newY = y - this.lastFrameY ;
 			this.lastFrameY = y;
-		}else{
-			this.lastFrameY = y;
-			proc= false;
 		}
-		if(proc){
+		if(difOk){
 			this.motionIn.process(audioContext.currentTime,[newX,newY]);
-		}	
+		}
 	}
 
 	_update(res){
@@ -77,31 +71,31 @@ export default class Enregistrement{
 	}
 
 	getProba(){
-		// if(/forme1/.test(label)){
-		// 	forme1 = this._scale(++forme1);
-		// 	forme2 = this._scale(--forme2);
-		// 	forme3 = this._scale(--forme3);
-		// }
-		// if(/forme2/.test(label)){
-		// 	forme2 = this._scale(++forme2);
-		// 	forme1 = this._scale(--forme1);
-		// 	forme3 = this._scale(--forme3);
-		// }
-		// if(/forme3/.test(label)){
-		// 	forme3 = this._scale(++forme3);
-		// 	forme1 = this._scale(--forme1);
-		// 	forme2 = this._scale(--forme2);
-		// } 
-		// if(forme1>forme2&&forme1>forme3&&forme1>seuil){
-		// 	return ["forme1"];
-		// } else if(forme2>forme3&&forme2>forme1&&forme2>seuil){
-		// 	return ["forme2"];
-		// } else if(forme3>forme2&&forme3>forme1&&forme3>seuil){
-		// 	return ["forme3"];
-		// }else{
-		// 	return null;
-		// }
 		return label;
+		if(/forme1/.test(label)){
+			forme1 = this._scale(++forme1);
+			forme2 = this._scale(--forme2);
+			forme3 = this._scale(--forme3);
+		}
+		if(/forme2/.test(label)){
+			forme2 = this._scale(++forme2);
+			forme1 = this._scale(--forme1);
+			forme3 = this._scale(--forme3);
+		}
+		if(/forme3/.test(label)){
+			forme3 = this._scale(++forme3);
+			forme1 = this._scale(--forme1);
+			forme2 = this._scale(--forme2);
+		} 
+		if(forme1>forme2&&forme1>forme3&&forme1>seuil){
+			return ["forme1"];
+		} else if(forme2>forme3&&forme2>forme1&&forme2>seuil){
+			return ["forme2"];
+		} else if(forme3>forme2&&forme3>forme1&&forme3>seuil){
+			return ["forme3"];
+		}else{
+			return null;
+		}
 	}
 
 	reset(){

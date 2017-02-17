@@ -9,7 +9,7 @@ export default class PlayerExperience extends Experience {
   constructor(clientType) {
     super(clientType);
     this.sharedConfig = this.require('shared-config');
-    this.nomFichierFond = 'fond.svg';
+    this.nomFichierFond = 'prototypeFond.svg';
   }
 
   // if anything needs to append when the experience starts
@@ -17,9 +17,9 @@ export default class PlayerExperience extends Experience {
     /*---------------- XMM - initialisation --------------*/
     //Forme local
     this.xmm= new xmm('hhmm', {
-      states: 20,
+      states: 10,
       relativeRegularization: 0.01,
-      transitionMode: 'leftright'
+      transitionMode: 'leftright',
     });
      const dossierPhrases = fs.readdirSync(path.join(process.cwd(), 'ressources/phrases/forme/'));
     for(let i = 0 ; i<dossierPhrases.length; i++){
@@ -41,7 +41,7 @@ export default class PlayerExperience extends Experience {
     const dossierPhrasesPath1 = fs.readdirSync(path.join(process.cwd(), 'ressources/phrases/chemin/sens1/'));
     this.xmmPath1 = new xmm('hhmm', {
       states: 50,
-      relativeRegularization: 0.01,
+      relativeRegularization: 0.05,
       transitionMode: 'ergodic'
     });
     for(let i = 0 ; i<dossierPhrasesPath1.length; i++){
@@ -63,7 +63,7 @@ export default class PlayerExperience extends Experience {
     const dossierPhrasesPath2 = fs.readdirSync(path.join(process.cwd(), 'ressources/phrases/chemin/sens2'));
     this.xmmPath2 = new xmm('hhmm', {
       states: 50,
-      relativeRegularization: 0.01,
+      relativeRegularization: 0.05,
       transitionMode: 'ergodic'
     });
     for(let i = 0 ; i<dossierPhrasesPath2.length; i++){

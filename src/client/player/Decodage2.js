@@ -24,7 +24,7 @@ export default class Enregistrement{
        description: ['x', 'y']
 		});
 		this.hhmmDecoder = new HhmmDecoderLfo({
-			likelihoodWindow: 20,
+			likelihoodWindow: 4,
       callback: this._update
       }
     );

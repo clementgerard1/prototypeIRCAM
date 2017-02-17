@@ -15,12 +15,14 @@ export default class Enregistrement{
 		});
 		this.xmmRecorder = new PhraseRecorderLfo();
 
-		this.indice = 12; // indice pour les fois où on veut enregistrer plusieurs gestes pour la même forme (en partant de différents endroit)
+		this.indice = 2; // indice pour les fois où on veut enregistrer plusieurs gestes pour la même forme (en partant de différents endroit)
 		
 		this.newNom = nom + '-' + this.indice;
 		this.xmmRecorder.setPhraseLabel(this.newNom);
-		this.lastFrameX = null;
-		this.lastFrameY = null;
+		this.lastFrameX = 0;
+		this.lastFrameY = 0;
+		this.minPixelX = 3;
+		this.minPixelY = 3;
 		this.motionIn.connect(this.xmmRecorder);
 		this.motionIn.start();
 	}
@@ -36,27 +38,19 @@ export default class Enregistrement{
 
 
 	process(x,y){
-		let proc = true;
-		let newX;
-		let newY;
-		if(this.lastFrameX){
-			newX = x - this.lastFrameX ;
+		let difOk = false;
+		// Normalisation des entrées
+		let newX = this.lastFrameX-x;
+		let newY = this.lastFrameY-y;
+		let absX = Math.abs(newX);
+		let absY = Math.abs(newY);
+		if((absX>this.minPixelX) || (absY>this.minPixelY)){
+			difOk = true;
 			this.lastFrameX = x;
-			if(Math.abs(newX)>0.3){
-			}
-		}else{
-			this.lastFrameX = x;
-			proc = false;
-		}
-		if(this.lastFrameY){
-			newY = y - this.lastFrameY ;
 			this.lastFrameY = y;
-		}else{
-			this.lastFrameY = y;
-			proc= false;
 		}
-		if(proc){
+		if(difOk){
 			this.motionIn.process(audioContext.currentTime,[newX,newY]);
-		}	
+		}
 	}
 }
