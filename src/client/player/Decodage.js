@@ -9,8 +9,9 @@ let label;
 let forme1 = 0;
 let forme2 = 0;
 let forme3 = 0;
+let forme4 = 0;
 let maxMemoire = 600;
-let seuil = 300;
+let seuil = 30;
 
 export default class Enregistrement{
 	constructor(){
@@ -71,28 +72,38 @@ export default class Enregistrement{
 	}
 
 	getProba(){
-		return label;
 		if(/forme1/.test(label)){
 			forme1 = this._scale(++forme1);
 			forme2 = this._scale(--forme2);
 			forme3 = this._scale(--forme3);
+			forme4 = this._scale(--forme4);
 		}
 		if(/forme2/.test(label)){
 			forme2 = this._scale(++forme2);
 			forme1 = this._scale(--forme1);
 			forme3 = this._scale(--forme3);
+			forme4 = this._scale(--forme4);
 		}
 		if(/forme3/.test(label)){
 			forme3 = this._scale(++forme3);
 			forme1 = this._scale(--forme1);
 			forme2 = this._scale(--forme2);
+			forme4 = this._scale(--forme4);
 		} 
-		if(forme1>forme2&&forme1>forme3&&forme1>seuil){
+		if(/forme3/.test(label)){
+			forme3 = this._scale(--forme3);
+			forme1 = this._scale(--forme1);
+			forme2 = this._scale(--forme2);
+			forme4 = this._scale(++forme4);
+		} 
+		if(forme1>forme2&&forme1>forme3&&forme1>forme4&&forme1>seuil){
 			return ["forme1"];
-		} else if(forme2>forme3&&forme2>forme1&&forme2>seuil){
+		} else if(forme2>forme3&&forme2>forme1&&forme2>forme4&&forme2>seuil){
 			return ["forme2"];
-		} else if(forme3>forme2&&forme3>forme1&&forme3>seuil){
+		} else if(forme3>forme2&&forme3>forme1&&forme3>forme4&&forme3>seuil){
 			return ["forme3"];
+		} else if(forme4>forme2&&forme4>forme1&&forme4>forme3&&forme4>seuil){
+			return ["forme4"];
 		}else{
 			return null;
 		}

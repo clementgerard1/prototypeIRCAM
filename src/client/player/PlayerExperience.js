@@ -37,8 +37,8 @@ export default class PlayerExperience extends soundworks.Experience {
               "markers/churchill.json",
               "sounds/chemin/irakC.mp3",   
               "markers/irak.json", //10  
-              "sounds/forme/trump.mp3",
               "sounds/forme/eminem.mp3",
+              "sounds/forme/trump.mp3",
               "sounds/forme/fr.mp3",
               "sounds/forme/brexit.mp3"]
     });
@@ -49,7 +49,7 @@ export default class PlayerExperience extends soundworks.Experience {
     // PARAMETRE
     this.nbChemin = 3;
     this.nbForme = 4;
-    this.qtRandom = 25;
+    this.qtRandom = 140;
     this.nbSegment = [232,144,106];
 
     //
@@ -61,6 +61,9 @@ export default class PlayerExperience extends soundworks.Experience {
     this.oldTabChemin = [];
     this.count1 = [];
     this.count2 = [];
+    //this.count3 = 0;
+    this.count4 = 10;
+    this.maxLag = 10;
     this.segmenter = [];
     this.segmenterFB = [];
     this.segmenterDelayFB = [];
@@ -137,8 +140,8 @@ export default class PlayerExperience extends soundworks.Experience {
       this.show();
       //XMM
       this.decoder = new Decodage();
-      this.decoder2 = new Decodage2();
-      this.decoder3 = new Decodage3();
+      //this.decoder2 = new Decodage2();
+      //this.decoder3 = new Decodage3();
     }else{
       //Paramètre initiaux
       this._addBoule(10,10);
@@ -172,7 +175,7 @@ export default class PlayerExperience extends soundworks.Experience {
       this._creationUniversSonore();
 
       //Initisalisation
-      this.maxCountUpdate = 4;
+      this.maxCountUpdate = 2;
       this.countUpdate = this.maxCountUpdate + 1; // Initialisation
       this.visualisationFormeChemin = false;
       this.visualisationBoule=true; // Visualisation de la boule
@@ -211,31 +214,43 @@ export default class PlayerExperience extends soundworks.Experience {
       this.tabIn;
       if (this.motionInput.isAvailable('orientation')) {
         this.motionInput.addListener('orientation', (data) => {
-          const newValues = this._toMove(data[2],data[1]-25);
-          this.tabIn = this._isIn(newValues[0],newValues[1]);
-          this.tabChemin = this._isInChemin(newValues[0],newValues[1]);
-          // if(this.modelOk&&!(this.tabChemin[0]&&this.tabChemin[1]&&this.tabChemin[2])){
-          //   this.decoder1.reset();
-          //   this.decoder2.reset();
+          //if(this.count3>this.maxLag){
+            const newValues = this._toMove(data[2],data[1]-25);
+            if(this.count4>this.maxLag){
+              this.tabIn = this._isIn(newValues[0],newValues[1]);
+              this.tabChemin = this._isInChemin(newValues[0],newValues[1]);
+              this.tabForme = this._isInForme(newValues[0], newValues[1]);
+              this.count4=-1;
+              if(this.countUpdate>this.maxCountUpdate){
+                this._updateGain(this.tabIn);
+                this.countUpdate = 0;
+              }else{
+                this.countUpdate++;
+              }
+            }
+
+            this.count4++;
+                        // if(this.modelOk&&!(this.tabChemin[0]&&this.tabChemin[1]&&this.tabChemin[2])){
+            //   this.decoder1.reset();
+            //   this.decoder2.reset();
+            // }
+            //console.log(this.tabForme);
+            // if(this.modelOk&&!(this.tabForme[0]&&this.tabForme[1]&&this.tabForme[2]&&this.tabForme[3])){
+            //   this.decoder.reset();
+            // }
+            
+            this._moveScreenTo(newValues[0],newValues[1],0.08);
+            // XMM
+            if(this.modelOK){
+              this.decoder.process(newValues[0],newValues[1]);
+              //this.decoder2.process(newValues[0],newValues[1]);
+              //this.decoder3.process(newValues[0],newValues[1]);
+              this._processProba();
+              //this.count3 =0;
+            }
+          // }else{
+          //   this.count3++;
           // }
-          this.tabForme = this._isInForme(newValues[0], newValues[1]);
-          if(this.modelOk&&!(this.tabForme[0]&&this.tabForme[1]&&this.tabForme[2]&&this.tabForme[3])){
-            this.decoder.reset();
-          }
-          if(this.countUpdate>this.maxCountUpdate){
-            this._updateGain(this.tabIn);
-            this.countUpdate = 0;
-          }else{
-            this.countUpdate++;
-          }
-          this._moveScreenTo(newValues[0],newValues[1],0.08);
-          // XMM
-          if(this.modelOK){
-            this.decoder.process(newValues[0],newValues[1]);
-            this.decoder2.process(newValues[0],newValues[1]);
-            this.decoder3.process(newValues[0],newValues[1]);
-            this._processProba();
-          }
         });
       } else {
         console.log("Orientation non disponible");
@@ -580,7 +595,7 @@ export default class PlayerExperience extends soundworks.Experience {
     //FORME 3
     i =0;
     let forme3 = false;
-    while(!forme2 && i<this.listeRectForme3.length){
+    while(!forme3 && i<this.listeRectForme3.length){
       rotateAngle=0;
       centreRotateX=null;
       centreRotateY=null;
@@ -602,7 +617,7 @@ export default class PlayerExperience extends soundworks.Experience {
     //FORME 4
     i =0;
     let forme4 = false;
-    while(!forme2 && i<this.listeRectForme4.length){
+    while(!forme4 && i<this.listeRectForme4.length){
       rotateAngle=0;
       centreRotateX=null;
       centreRotateY=null;
@@ -724,17 +739,17 @@ export default class PlayerExperience extends soundworks.Experience {
       });
       this.segmenterGain[i] = audioContext.createGain();
       this.segmenterGainGrain[i] = audioContext.createGain();
-      //this.segmenterFB[i] = audioContext.createGain();
-      //this.segmenterDelayFB[i] = audioContext.createDelay(0.8);
+      // this.segmenterFB[i] = audioContext.createGain();
+      // this.segmenterDelayFB[i] = audioContext.createDelay(0.8);
       this.segmenterGainGrain[i].gain.setValueAtTime(0,audioContext.currentTime);
       this.segmenterGain[i].gain.setValueAtTime(0,audioContext.currentTime);
-      //this.segmenterFB[i].gain.setValueAtTime(0.0,audioContext.currentTime);
+      // this.segmenterFB[i].gain.setValueAtTime(0.0,audioContext.currentTime);
       this.segmenterGainGrain[i].connect(this.grain.input);
       this.segmenterGain[i].connect(audioContext.destination);
       //this.segmenter[i].connect(this.segmenterFB[i]);
-      //this.segmenterFB[i].connect(this.segmenterDelayFB[i]);
-      //this.segmenterDelayFB[i].connect(audioContext.destination);
-      //this.segmenterDelayFB[i].connect(this.segmenterFB[i]);
+      // this.segmenterFB[i].connect(this.segmenterDelayFB[i]);
+      // this.segmenterDelayFB[i].connect(audioContext.destination);
+      // this.segmenterDelayFB[i].connect(this.segmenterFB[i]);
       this.segmenter[i].connect(this.segmenterGain[i]);
       this.segmenter[i].connect(this.segmenterGainGrain[i]);
       this._startSegmenter(i);
@@ -812,13 +827,13 @@ export default class PlayerExperience extends soundworks.Experience {
         let actual = this.gains[i].gain.value;
         this.gains[i].gain.cancelScheduledValues(audioContext.currentTime);
         this.gains[i].gain.setValueAtTime(actual,audioContext.currentTime);
-        this.gains[i].gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 1);
+        this.gains[i].gain.linearRampToValueAtTime(0.6, audioContext.currentTime + 2.3);
         this.gainsDirections[i]='up';
       }else if(this.gains[i].gain.value!=0&&!tabIn[i]&&this.gainsDirections[i]=='up'){
         let actual = this.gains[i].gain.value;
         this.gains[i].gain.cancelScheduledValues(audioContext.currentTime);
         this.gains[i].gain.setValueAtTime(actual,audioContext.currentTime);
-        this.gains[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 1);
+        this.gains[i].gain.linearRampToValueAtTime(0, audioContext.currentTime + 3.5);
         this.gainsDirections[i]='down';
       }
     }
@@ -962,42 +977,47 @@ export default class PlayerExperience extends soundworks.Experience {
 
     this.ancienForme = [this.tabForme[0],this.tabForme[1],this.tabForme[2],this.tabForme[3]];
 
+    if(this.tabForme[0]||this.tabForme[1]||this.tabForme[2]||this.tabForme[3]){
+      this.decoder.reset();
+    }
+
   }
 
   /* -----------------------------------------XMM----------------------------------------------- */
   _setModel(model,model1,model2){
     this.decoder.setModel(model);
-    this.decoder2.setModel(model1);
-    this.decoder3.setModel(model2);
+    //this.decoder2.setModel(model1);
+    //this.decoder3.setModel(model2);
     this.modelOK = true;
   }
 
   _processProba(){    
-    let probaMax = this.decoder.getProba();
-    let probaMax1 = this.decoder2.getProba();
-    let probaMax2 = this.decoder3.getProba();
-    let newSegment = [];
-    //Chemin
+     let probaMax = this.decoder.getProba();
+     //console.log(probaMax);
+    // //let probaMax1 = this.decoder2.getProba();
+    // //let probaMax2 = this.decoder3.getProba();
+    // let newSegment = [];
+    // //Chemin
     for(let i = 0 ; i < this.nbChemin ; i ++){
-      newSegment[i] = this._findNewSegment(probaMax1, probaMax2, i);
-      this._actualiserSegmentIfNotIn(newSegment[i],i);
-      let nom1 = 'prototypeFond-'+i+'-1';
-      let nom2 = 'prototypeFond-'+i+'-2';
-      if(this.tabChemin[i]&&(probaMax1[0]==nom1||probaMax2[0]==nom2)){
-        if(!isNaN(probaMax1[1][i]) || !isNaN(probaMax2[1][i])){
-          this.lastPosition[i] = newSegment[i];
-          newSegment[i] = newSegment[i]+ (Math.trunc(Math.random()*this.qtRandom));
-          this.segmenter[i].segmentIndex = newSegment[i];
-        }
-      }else{
-        this.segmenter[i].segmentIndex = this.lastPosition[i] + (Math.trunc(Math.random()*this.qtRandom));
-      }
-      if(this.tabChemin[i]!=this.oldTabChemin[i]){
-        this._actualiserAudioChemin(i);
-      }
-      if(i==2){
-      }
-      this.oldTabChemin[i] = this.tabChemin[i];
+    //   newSegment[i] = this._findNewSegment(probaMax1, probaMax2, i);
+    //   this._actualiserSegmentIfNotIn(newSegment[i],i);
+    //   let nom1 = 'prototypeFond-'+i+'-1';
+    //   let nom2 = 'prototypeFond-'+i+'-2';
+    //   if(this.tabChemin[i]&&(probaMax1[0]==nom1||probaMax2[0]==nom2)){
+    //     //if(!isNaN(probaMax1[1][i]) || !isNaN(probaMax2[1][i])){
+    //       this.lastPosition[i] = newSegment[i];
+    //       newSegment[i] = newSegment[i]+ (Math.trunc(Math.random()*this.qtRandom));
+    //       this.segmenter[i].segmentIndex = newSegment[i];
+    //     }
+    //   }else{
+        this.segmenter[i].segmentIndex = Math.trunc(Math.random()*this.qtRandom);//this.lastPosition[i] + (Math.trunc(Math.random()*this.qtRandom));
+      // }
+       if(this.tabChemin[i]!=this.oldTabChemin[i]){
+         this._actualiserAudioChemin(i);
+       }
+      // if(i==2){
+      // }
+       this.oldTabChemin[i] = this.tabChemin[i];
     }
 
     //Forme
@@ -1021,6 +1041,10 @@ export default class PlayerExperience extends soundworks.Experience {
         this.gainOutputGrain.gain.cancelScheduledValues(audioContext.currentTime);
         this.gainOutputGrain.gain.setValueAtTime(actual1,audioContext.currentTime);
         this.gainOutputGrain.gain.linearRampToValueAtTime(0.5,audioContext.currentTime + 2);
+        this.rampForme['forme1'] = 0;
+        this.rampForme['forme2'] = 0;
+        this.rampForme['forme3'] = 0;
+        this.rampForme['forme4'] = 0;
       }else{
         this.gainOutputDirect.gain.cancelScheduledValues(audioContext.currentTime);
         this.gainOutputDirect.gain.setValueAtTime(actual1,audioContext.currentTime);
@@ -1028,10 +1052,6 @@ export default class PlayerExperience extends soundworks.Experience {
         this.gainOutputGrain.gain.cancelScheduledValues(audioContext.currentTime);
         this.gainOutputGrain.gain.setValueAtTime(actual1,audioContext.currentTime);
         this.gainOutputGrain.gain.linearRampToValueAtTime(0,audioContext.currentTime + 2);
-        this.rampForme['forme1'] = 0;
-        this.rampForme['forme2'] = 0;
-        this.rampForme['forme3'] = 0;
-        this.rampForme['forme4'] = 0;
       }
     }
     this.ancien3 = direct;
@@ -1060,12 +1080,19 @@ export default class PlayerExperience extends soundworks.Experience {
           this.rampForme['forme3']--;
           this.rampForme['forme4']--;
         }
+        this.rampForme[probaMax]++;
+
+        if(this.rampForme['forme1']<0) this.rampForme['forme1']=0;
+        if(this.rampForme['forme2']<0) this.rampForme['forme2']=0;
+        if(this.rampForme['forme3']<0) this.rampForme['forme3']=0;
+        if(this.rampForme['forme4']<0) this.rampForme['forme4']=0;
       }
-      this.rampForme[probaMax]++;
     }
     for(let i = 0 ; i < this.nbForme ; i++){
       this._actualiserAudioForme(i);
     }
+
+    //console.log(this.rampForme);
 
   }
 
@@ -1077,7 +1104,7 @@ export default class PlayerExperience extends soundworks.Experience {
       newSegment = Math.trunc(probaMax1[1][id]*(this.nbSegment[id]-this.qtRandom));
       actuel = "1";
       if(this.count2[id]>this.countMax){
-        this.decoder3.reset();
+        //this.decoder3.reset();
         this.count2[id] = 0;
       }
       this.count1[id] = 0;
@@ -1086,7 +1113,7 @@ export default class PlayerExperience extends soundworks.Experience {
       newSegment = Math.trunc((1-probaMax2[1][id])*(this.nbSegment[id]-this.qtRandom));
       actuel = "0";
       if(this.count1[id]>this.countMax){
-        this.decoder2.reset();
+        //this.decoder2.reset();
         this.count1[id] = 0;
       }
       this.count2[id] = 0;

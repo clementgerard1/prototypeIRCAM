@@ -7,7 +7,7 @@ export default class DesignerFormeExperience extends Experience {
   constructor(clientType) {
     super(clientType);
     this.sharedConfig = this.require('shared-config');
-    this.fichierForme = 'forme2.svg';
+    this.fichierForme = 'forme4.svg';
     this.label = this.fichierForme.replace('.svg','');
   }
 

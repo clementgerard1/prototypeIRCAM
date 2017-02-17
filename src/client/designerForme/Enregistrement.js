@@ -15,7 +15,7 @@ export default class Enregistrement{
 		});
 		this.xmmRecorder = new PhraseRecorderLfo();
 
-		this.indice = 2; // indice pour les fois où on veut enregistrer plusieurs gestes pour la même forme (en partant de différents endroit)
+		this.indice = 14; // indice pour les fois où on veut enregistrer plusieurs gestes pour la même forme (en partant de différents endroit)
 		
 		this.newNom = nom + '-' + this.indice;
 		this.xmmRecorder.setPhraseLabel(this.newNom);

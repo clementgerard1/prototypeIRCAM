@@ -40,15 +40,15 @@ export default class MyGrain extends waves.AudioTimeEngine {
 		this.delay = [];
 
 		// Initialisation des paramètres
-    this.period = 100; //Nombre de coup de scheduler (min 10)
+    this.period = 25; //Nombre de coup de scheduler (min 10)
 
 		this.grainSchedulerPhase = [];
     for(let i = 0; i<this.grainPhase.length ; i++){
     	this.grainSchedulerPhase[i] = Math.trunc(this.grainPhase[i]*this.period);
     }
-    this.finesse = 0.005; // period du scheduler 
+    this.finesse = 0.02; // period du scheduler 
 		this.randomPosition = 1500; //ms
-		this.rampGainCompensation= 0.001; //ms
+		// this.rampGainCompensation= 0.0015; //ms
 
 		for(let i = 0; i < 16; i++) { 
 			this.gain.push(audioContext.createGain());
@@ -99,12 +99,12 @@ export default class MyGrain extends waves.AudioTimeEngine {
 		}
 	}
 
-	/* Private */
-	_norm(phase) {
-		let phaseR;
-		phaseR = (phase+(this.period/this.finesse)/1000)%1;
-		return phaseR;
-	}
+	// /* Private */
+	// _norm(phase) {
+	// 	let phaseR;
+	// 	phaseR = (phase+(this.period/this.finesse)/1000)%1;
+	// 	return phaseR;
+	// }
 
 	/* Private */
 	_assignGain() {
@@ -126,6 +126,6 @@ export default class MyGrain extends waves.AudioTimeEngine {
 
 	/* Private */
 	_assignPosition(id) {
-		this.delay[id].delayTime.setValueAtTime(Math.random()*this.randomPosition/1000., audioContext.currentTime+0.001);//+this.rampGainCompensation);
+		this.delay[id].delayTime.setValueAtTime(Math.random()*this.randomPosition/1000., audioContext.currentTime+0.0015);//+this.rampGainCompensation);
 	}
 }
