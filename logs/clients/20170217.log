@@ -1,0 +1,21 @@
+2017-02-17 12:57:16			- /js/player.js?0.0.1:534:42	"Uncaught TypeError: Cannot read property '0' of undefined"
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+
+2017-02-17 12:57:56			- /js/player.js?0.0.1:538:42	"Uncaught TypeError: Cannot read property '0' of undefined"
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+
+2017-02-17 13:09:44			- /js/player.js?0.0.1:541:15	"Uncaught TypeError: Cannot read property '0' of undefined"
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+
+2017-02-17 13:10:29			- /js/player.js?0.0.1:541:15	"Uncaught TypeError: Cannot read property '0' of undefined"
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+
+2017-02-17 13:20:55			- /js/player.js?0.0.1:588:29	"Uncaught TypeError: Failed to execute 'setValueAtTime' on 'AudioParam': The provided double value is non-finite."
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+
+2017-02-17 14:42:24			- /js/player.js?0.0.1:588:29	"Uncaught TypeError: Failed to execute 'setValueAtTime' on 'AudioParam': The provided double value is non-finite."
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+
+2017-02-17 14:43:39			- /js/player.js?0.0.1:589:29	"Uncaught TypeError: Failed to execute 'setValueAtTime' on 'AudioParam': The provided double value is non-finite."
+	Mozilla/5.0 (Linux; Android 6.0.1; SM-J500FN Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36
+

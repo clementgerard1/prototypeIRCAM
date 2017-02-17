@@ -1,5 +1,5 @@
 import * as soundworks from 'soundworks/client';
-import MyGrain from './MyGrain.js';
+import MyGrain2 from './MyGrain2.js';
 import * as waves from 'waves-audio';
 import {HhmmDecoderLfo} from 'xmm-lfo'
 import Decodage from './Decodage.js';
@@ -706,7 +706,7 @@ export default class PlayerExperience extends soundworks.Experience {
   // Créé le moteur sonore
   _creationUniversSonore(){
     //Granulateur
-    this.grain = new MyGrain();
+    this.grain = new MyGrain2();
     scheduler.add(this.grain);
     this.grain.connect(audioContext.destination);
     const bufferAssocies = [5,7,9];
@@ -974,7 +974,6 @@ export default class PlayerExperience extends soundworks.Experience {
 
   _processProba(){    
     let probaMax = this.decoder.getProba();
-    console.log(probaMax);
     let probaMax1 = this.decoder2.getProba();
     let probaMax2 = this.decoder3.getProba();
     let newSegment = [];
