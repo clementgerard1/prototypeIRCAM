@@ -18,7 +18,7 @@ export default class PlayerExperience extends Experience {
     //Forme local
     this.xmm= new xmm('hhmm', {
       states: 10,
-      relativeRegularization: 0.01,
+      relativeRegularization: 0.00000001,
       transitionMode: 'leftright',
     });
      const dossierPhrases = fs.readdirSync(path.join(process.cwd(), 'ressources/phrases/forme/'));

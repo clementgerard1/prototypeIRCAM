@@ -78,7 +78,7 @@ export default class PlayerExperience extends soundworks.Experience {
     this.gainOutputDirect;
     this.gainOutputGrain;
     this.gainsForme = [];
-    this.ancienForme = [false,false,false];
+    this.ancienForme = [false,false,false,false];
     this.gainsGrainForme = [];
     this.soundForme = [];
     this.rampForme = {'forme1':0, 'forme2':0, 'forme3':0, 'forme4' :0};
@@ -827,7 +827,7 @@ export default class PlayerExperience extends soundworks.Experience {
         let actual = this.gains[i].gain.value;
         this.gains[i].gain.cancelScheduledValues(audioContext.currentTime);
         this.gains[i].gain.setValueAtTime(actual,audioContext.currentTime);
-        this.gains[i].gain.linearRampToValueAtTime(0.6, audioContext.currentTime + 2.3);
+        this.gains[i].gain.linearRampToValueAtTime(0.24, audioContext.currentTime + 2.3);
         this.gainsDirections[i]='up';
       }else if(this.gains[i].gain.value!=0&&!tabIn[i]&&this.gainsDirections[i]=='up'){
         let actual = this.gains[i].gain.value;
@@ -880,8 +880,8 @@ export default class PlayerExperience extends soundworks.Experience {
   _actualiserAudioForme(id){
     //Forme1
     if(id==0 && this.tabForme[id]){
-      let gainGrain = 1 - (this.rampForme["forme1"]/600);
-      let gainDirect = this.rampForme["forme1"]/600;
+      let gainGrain = 1 - (this.rampForme["forme1"]/1000);
+      let gainDirect = this.rampForme["forme1"]/1000;
       if(gainDirect<0){
         gainDirect = 0;
       }else if(gainDirect>1){
@@ -900,8 +900,8 @@ export default class PlayerExperience extends soundworks.Experience {
 
         //Forme2
     if(id==1 && this.tabForme[id]){
-      let gainGrain = 1 - (this.rampForme["forme2"]/600);
-      let gainDirect = this.rampForme["forme2"]/600;
+      let gainGrain = 1 - (this.rampForme["forme2"]/1000);
+      let gainDirect = this.rampForme["forme2"]/1000;
       if(gainDirect<0){
         gainDirect = 0;
       }else if(gainDirect>1){
@@ -920,8 +920,8 @@ export default class PlayerExperience extends soundworks.Experience {
 
     //Forme3
     if(id==2 && this.tabForme[id]){
-      let gainGrain = 1 - (this.rampForme["forme3"]/600);
-      let gainDirect = this.rampForme["forme3"]/600;
+      let gainGrain = 1 - (this.rampForme["forme3"]/1000);
+      let gainDirect = this.rampForme["forme3"]/1000;
       if(gainDirect<0){
         gainDirect = 0;
       }else if(gainDirect>1){
@@ -940,8 +940,8 @@ export default class PlayerExperience extends soundworks.Experience {
     
     //Forme4
     if(id==3 && this.tabForme[id]){
-      let gainGrain = 1 - (this.rampForme["forme4"]/600);
-      let gainDirect = this.rampForme["forme4"]/600;
+      let gainGrain = 1 - (this.rampForme["forme4"]/1000);
+      let gainDirect = this.rampForme["forme4"]/1000;
       if(gainDirect<0){
         gainDirect = 0;
       }else if(gainDirect>1){
