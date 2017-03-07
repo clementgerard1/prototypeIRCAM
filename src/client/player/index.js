@@ -1,9 +1,10 @@
 // import client side soundworks and player experience
 import * as soundworks from 'soundworks/client';
-import PlayerExperience from './PlayerExperience.js';
 import viewTemplates from '../shared/viewTemplates';
 import viewContent from '../shared/viewContent';
 import fs from 'fs';
+
+import PlayerExperience from './PlayerExperience.js';
 
 // launch application when document is fully loaded
 window.addEventListener('load', () => {

@@ -1,0 +1,24 @@
+2017-03-06 11:25:52			- /js/player.js?0.0.1:22165:15	"Uncaught ReferenceError: Decodage is not defined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 11:25:52			- /js/player.js?0.0.1:1473:19	"Uncaught TypeError: Cannot read property 'setModel' of undefined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 11:28:52			- /js/player.js?0.0.1:1198:24	"Uncaught ReferenceError: MyGrain2 is not defined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 12:29:39			- /js/shapedesigner.js?0.0.1:200:54	"Uncaught TypeError: Cannot read property 'bind' of undefined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 12:31:15			- /js/shapedesigner.js?0.0.1:200:54	"Uncaught TypeError: Cannot read property 'bind' of undefined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 12:31:32			- /js/shapedesigner.js?0.0.1:200:54	"Uncaught TypeError: Cannot read property 'bind' of undefined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 12:31:37			- /js/shapedesigner.js?0.0.1:200:54	"Uncaught TypeError: Cannot read property 'bind' of undefined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
+2017-03-06 12:32:49			- /js/shapedesigner.js?0.0.1:200:54	"Uncaught TypeError: Cannot read property 'bind' of undefined"
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36
+
