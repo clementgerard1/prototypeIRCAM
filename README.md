@@ -8,7 +8,7 @@ This prototype use svg to create the application world : [*svg-edit*](https://sv
 
 ###Concept
 
-The *player* can moving in a world where he is invited to discover sounds by following path or shape.
+The *player* can moving in a world where he is invited to discover sounds by following paths or shapes.
 
 
 
