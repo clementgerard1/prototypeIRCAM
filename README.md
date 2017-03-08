@@ -4,16 +4,15 @@
 
 This prototype has been developed at Ircam in the team 'Sound Music Mouvement Interaction' during a training course.
 
+This prototype use svg to create the application world : [*svg-edit*](https://svg-edit.github.io/svgedit/releases/svg-edit-2.8.1/svg-editor.html)
+
+##Concept
 
 The *player* can moving in a world where he is invited to discover sounds by following path or shape.
 
 
-This prototype use svg to create the application world : [*svg-edit*](https://svg-edit.github.io/svgedit/releases/svg-edit-2.8.1/svg-editor.html)
 
-
-
-
-
+##Functioning
 
 There are 3 layers of complexity :
 
