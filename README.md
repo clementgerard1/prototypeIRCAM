@@ -14,13 +14,9 @@ The *player* can moving in a world where he is invited to discover sounds by fol
 
 ##Functioning
 
-There are 3 layers of complexity :
-
 There is a drawing map designed with invisible rect and ellipse which create areas linked to differents sounds. When a player is in a shape, the sound is played.
 
-There are paths and shapes (also designed in svg) which play sounds when the player follow the path. 
-
-If the player follow the edge of the shape, sound is clearer.
+There are paths and shapes (also designed in svg) which play sounds when the player follow the path. If the player follow the edge of the shape, sound is clearer.
 
 
 
