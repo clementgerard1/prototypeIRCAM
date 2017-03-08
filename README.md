@@ -1,4 +1,4 @@
-#Application Subway
+#Subway Prototype
 
 > *Subway* is a prototype based on the [*Soundworks*](https://github.com/collective-soundworks/soundworks/) framework.
 
