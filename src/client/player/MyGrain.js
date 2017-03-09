@@ -19,7 +19,7 @@ export default class MyGrain extends waves.AudioTimeEngine {
 		this.delay = [];
 
     	this.grainPeriod = 25;
-    	this.period = 0.02; 
+    	this.period = 0.1; 
 		this.randomPosition = 1500;
 		this.grainSchedulerPhase = [];
 

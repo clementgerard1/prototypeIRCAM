@@ -24,11 +24,11 @@ export default class PlayerExperience extends soundworks.Experience {
     this.platform = this.require('platform', { features: ['web-audio', 'wake-lock'] });
     this.motionInput = this.require('motion-input', { descriptors: ['orientation'] });
     this.loader = this.require('loader', { 
-      files: ['sounds/nappe/gadoue.mp3',    // 0
-              'sounds/nappe/gadoue.mp3',    // 1
-              "sounds/nappe/nage.mp3",      // ...
-              "sounds/nappe/tempete.mp3",
-              "sounds/nappe/vent.mp3",
+      files: ['sounds/layers/gadoue.mp3',    // 0
+              'sounds/layers/gadoue.mp3',    // 1
+              "sounds/layers/nage.mp3",      // ...
+              "sounds/layers/tempete.mp3",
+              "sounds/layers/vent.mp3",
               "sounds/path/camusC.mp3",     // 5  
               "markers/camus.json", 
               "sounds/path/churchillC.mp3",    
@@ -114,10 +114,8 @@ export default class PlayerExperience extends soundworks.Experience {
     this._replaceShape = this._replaceShape.bind(this);
     this._addShape = this._addShape.bind(this);
     this._startSegmenter = this._startSegmenter.bind(this);
-    this._findNewSegment = this._findNewSegment.bind(this);
-    this._updateSegmentIfNotIn = this._updateSegmentIfNotIn.bind(this);
     this._updateAudioPath = this._updateAudioPath.bind(this);
-    this._updateAudioshape = this._updateAudioshape.bind(this);
+    this._updateAudioShape = this._updateAudioShape.bind(this);
 
     //receives
     this.receive('background', (data) => this._addBackground(data));
@@ -224,7 +222,7 @@ export default class PlayerExperience extends soundworks.Experience {
     elem.setAttributeNS(null,"stroke",'white');
     elem.setAttributeNS(null,"stroke-width",3);
     elem.setAttributeNS(null,"fill",'black');
-    elem.setAttributeNS(null,"id",'Ball');
+    elem.setAttributeNS(null,"id",'ball');
     document.getElementsByTagName('svg')[0].appendChild(elem);
   }
 
@@ -266,7 +264,7 @@ export default class PlayerExperience extends soundworks.Experience {
     const shapeXmlTab = shapeXml.childNodes;
     for(let i = 0; i < shapeXmlTab.length; i++){
       if(shapeXmlTab[i].nodeName == 'path'){
-        const newNode = Ball.parentNode.insertBefore(shapeXmlTab[i], ball);
+        const newNode = ball.parentNode.insertBefore(shapeXmlTab[i], ball);
         this.shapeList[this.shapeList.length] = newNode.setAttribute('transform', 'translate(' + x + ' ' + y + ')');
       }
     } 
@@ -347,11 +345,10 @@ export default class PlayerExperience extends soundworks.Experience {
     for(let i = 0; i < newList.length; i++){
       const elementName = newList[i].innerHTML;
        if(elementName.slice(0, 1) == '_'){
-
          const shapeName = elementName.slice(1, elementName.length);
          const x = newList[i].getAttribute('x');
          const y = newList[i].getAttribute('y');
-         this.send('askShapes', shapeName, x, y);
+         this.send('askShape', shapeName, x, y);
          const parent = newList[i].parentNode;
          parent.removeChild(newList[i]);
          const elems = document.getElementsByClassName(shapeName);
@@ -706,7 +703,7 @@ export default class PlayerExperience extends soundworks.Experience {
 
   _startSegmenter(i){
     this.segmenter[i].trigger();
-    let newPeriod = parseFloat(this.loader.buffers[6 + (i * 2)]['duration'][this.segmenter[i].segmentId]) * 1000;
+    let newPeriod = parseFloat(this.loader.buffers[6 + (i * 2)]['duration'][this.segmenter[i].segmentIndex]) * 1000;
     setTimeout( () => {this._startSegmenter(i);} , 
     newPeriod);
   }
@@ -759,7 +756,7 @@ export default class PlayerExperience extends soundworks.Experience {
     }
   }
 
-  _updateAudioshape(id){
+  _updateAudioShape(id){
     
     //shape1
     if(id == 0 && this.tabShape[id]){
@@ -787,7 +784,7 @@ export default class PlayerExperience extends soundworks.Experience {
       let gainDirect = this.rampShape["shape2"] / 1000;
       if(gainDirect < 0){
         gainDirect = 0;
-      }else if(gainDirec > 1){
+      }else if(gainDirect > 1){
         gainDirect = 1;
       }
       if(gainGrain < 0){
@@ -876,9 +873,9 @@ export default class PlayerExperience extends soundworks.Experience {
 
   _processProba(){    
     let probaMax = this.decoder.getProba();
-    // //Path
+    //Path
     for(let i = 0 ; i < this.nbPath ; i ++){
-      this.segmenter[i].segmentId = Math.trunc(Math.random() * this.qtRandom);
+      this.segmenter[i].segmentIndex = Math.trunc(Math.random() * this.qtRandom);
       if(this.tabPath[i] != this.oldTabPath[i]){
          this._updateAudioPath(i);
       }
