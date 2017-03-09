@@ -189,6 +189,7 @@ export default class PlayerExperience extends soundworks.Experience {
           if(this.count4 > this.maxLag){
             this.tabInLayer = this._isInLayer(newValues[0], newValues[1]);
             this.tabPath = this._isInPath(newValues[0], newValues[1]);
+            console.log(this.tabPath);
             this.tabShape = this._isInShape(newValues[0], newValues[1]);
             this.count4 = -1;
             if(this.countUpdate > this.maxCountUpdate){
@@ -421,7 +422,7 @@ export default class PlayerExperience extends soundworks.Experience {
       width = this.listRectPath1[i].getAttribute('height');
       left = this.listRectPath1[i].getAttribute('x');
       top = this.listRectPath1[i].getAttribute('y');
-      let transform = this.listRectPath1[i].getAttribute('transformform');
+      let transform = this.listRectPath1[i].getAttribute('transform');
       if(/rotate/.test(transform)){
         transform = transform.slice(7,transform.length);
         middleRotateX = parseFloat(transform.split(" ")[1]);
@@ -443,7 +444,7 @@ export default class PlayerExperience extends soundworks.Experience {
       width = this.listRectPath2[i].getAttribute('height');
       left = this.listRectPath2[i].getAttribute('x');
       top = this.listRectPath2[i].getAttribute('y');
-      transform = this.listRectPath2[i].getAttribute('transformform');
+      transform = this.listRectPath2[i].getAttribute('transform');
       if(/rotate/.test(transform)){
         transform = transform.slice(7,transform.length);
         middleRotateX = parseFloat(transform.split(" ")[1]);
@@ -465,7 +466,7 @@ export default class PlayerExperience extends soundworks.Experience {
       width = this.listRectPath3[i].getAttribute('height');
       left = this.listRectPath3[i].getAttribute('x');
       top = this.listRectPath3[i].getAttribute('y');
-      transform = this.listRectPath3[i].getAttribute('transformform');
+      transform = this.listRectPath3[i].getAttribute('transform');
       if(/rotate/.test(transform)){
         transform = transform.slice(7,transform.length);
         middleRotateX = parseFloat(transform.split(" ")[1]);
@@ -647,7 +648,7 @@ export default class PlayerExperience extends soundworks.Experience {
       this.segmenterGain[i].connect(audioContext.destination);
       this.segmenter[i].connect(this.segmenterGain[i]);
       this.segmenter[i].connect(this.segmenterGainGrain[i]);
-      this._startSegmenter(i);
+      setTimeout(this._startSegmenter(i), 2000);
 
     }
 
