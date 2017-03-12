@@ -189,7 +189,6 @@ export default class PlayerExperience extends soundworks.Experience {
           if(this.count4 > this.maxLag){
             this.tabInLayer = this._isInLayer(newValues[0], newValues[1]);
             this.tabPath = this._isInPath(newValues[0], newValues[1]);
-            console.log(this.tabPath);
             this.tabShape = this._isInShape(newValues[0], newValues[1]);
             this.count4 = -1;
             if(this.countUpdate > this.maxCountUpdate){
